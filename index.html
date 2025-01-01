@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <!-- Material UI CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/muicss/0.10.3/css/mui.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 320px;
+        }
+        .screen {
+            width: 100%;
+            height: 50px;
+            font-size: 1.5rem;
+            text-align: right;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .mui-btn {
+            width: 70px;
+            height: 50px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="screen" id="calc-screen" readonly>
+        <div class="button-row">
+            <button class="mui-btn mui-btn--raised" data-value="7">7</button>
+            <button class="mui-btn mui-btn--raised" data-value="8">8</button>
+            <button class="mui-btn mui-btn--raised" data-value="9">9</button>
+            <button class="mui-btn mui-btn--danger" data-value="/">÷</button>
+        </div>
+        <div class="button-row">
+            <button class="mui-btn mui-btn--raised" data-value="4">4</button>
+            <button class="mui-btn mui-btn--raised" data-value="5">5</button>
+            <button class="mui-btn mui-btn--raised" data-value="6">6</button>
+            <button class="mui-btn mui-btn--danger" data-value="*">×</button>
+        </div>
+        <div class="button-row">
+            <button class="mui-btn mui-btn--raised" data-value="1">1</button>
+            <button class="mui-btn mui-btn--raised" data-value="2">2</button>
+            <button class="mui-btn mui-btn--raised" data-value="3">3</button>
+            <button class="mui-btn mui-btn--danger" data-value="-">−</button>
+        </div>
+        <div class="button-row">
+            <button class="mui-btn mui-btn--raised" data-value="0">0</button>
+            <button class="mui-btn mui-btn--raised" data-value=".">.</button>
+            <button class="mui-btn mui-btn--danger" id="clear">C</button>
+            <button class="mui-btn mui-btn--danger" data-value="+">+</button>
+        </div>
+        <div class="button-row">
+            <button class="mui-btn mui-btn--primary mui-btn--raised" id="equals" style="width: 100%;">=</button>
+        </div>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let screen = $('#calc-screen');
+            let expression = '';
+
+            $('.mui-btn').not('#equals, #clear').on('click', function() {
+                let value = $(this).data('value');
+                expression += value;
+                screen.val(expression);
+            });
+
+            $('#clear').on('click', function() {
+                expression = '';
+                screen.val('');
+            });
+
+            $('#equals').on('click', function() {
+                try {
+                    expression = eval(expression);
+                    screen.val(expression);
+                } catch {
+                    screen.val('Error');
+                }
+            });
+
+            // Add keyboard support
+            $(document).on('keydown', function(event) {
+                const key = event.key;
+                if (!isNaN(key) || ['+', '-', '*', '/', '.'].includes(key)) {
+                    expression += key;
+                    screen.val(expression);
+                } else if (key === 'Enter') {
+                    try {
+                        expression = eval(expression);
+                        screen.val(expression);
+                    } catch {
+                        screen.val('Error');
+                    }
+                } else if (key === 'Backspace') {
+                    expression = expression.slice(0, -1);
+                    screen.val(expression);
+                } else if (key.toLowerCase() === 'c') {
+                    expression = '';
+                    screen.val('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
